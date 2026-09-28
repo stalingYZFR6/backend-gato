@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import gatoRoutes from "./routes/gato.routes.js";
+import climaRoutes from "./routes/clima.routes.js";
 
 const app = express();
 
@@ -12,7 +13,8 @@ const app = express();
 const allowedOrigins = [
   "http://127.0.0.1:5500",
   "http://localhost:5500",
-  "https://fronten-gato.onrender.com"
+  "https://fronten-gato.onrender.com",
+  "https://fronten-clima.onrender.com"
 ];
 
 app.use(cors({
@@ -61,6 +63,10 @@ app.use(express.json());
 // ==========================================
 
 app.use(gatoRoutes);
+
+/// climaaaa
+
+app.use(climaRoutes);
 
 
 // ==========================================
