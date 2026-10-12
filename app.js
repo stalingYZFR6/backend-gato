@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 import gatoRoutes from "./routes/gato.routes.js";
 import climaRoutes from "./routes/clima.routes.js";
+import rateLimit from "express-rate-limit";
+import db from "./firebase.js";  // Para el registro de la bitácora
+
+
 
 const app = express();
 
