@@ -1,28 +1,21 @@
 import express from "express";
-import cors from "cors";  //Para que el frontend pueda llamar
+import cors from "cors";  // Para que el frontend pueda llamar
 import gatoRoutes from "./routes/gato.routes.js";
 import climaRoutes from "./routes/clima.routes.js";
+import estadisticasRoutes from "./routes/estadisticas.routes.js";
 import rateLimit from "express-rate-limit";
 import db from "./firebase.js";  // Para el registro de la bitácora
-import estadisticasRoutes from "./routes/estadisticas.routes.js";
-
 
 const app = express();
 
-
-
-
-// Middlewares
-app.use(cors());  //Permite peticiones desde cualquier origen
+// Middlewares globales
+app.use(cors());  // Permite peticiones desde cualquier origen
 app.use(express.json());
 
-
-
-
-// Rate limit para gatos
+// Rate limit para endpoints específicos de gatos (Aumentado opcionalmente a 10 para pruebas)
 const limiterGatos = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 3,
+  max: 10, // Cambiado temporalmente a 10 para evitar bloqueos rápidos en pruebas
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -43,22 +36,23 @@ const limiterGatos = rateLimit({
   },
 });
 
-
-// Aplicar el limitador ANTES de las rutas de gatos
+// Aplicar el limitador solo a las rutas que lo requieran (ej. creación o modificación)
+// O si lo prefieres aplicar a todo /gato y /gatos:
 app.use("/gato", limiterGatos);
 app.use("/gatos", limiterGatos);
-app.use(estadisticasRoutes);
 
-
-// Rutas
+// ==========================================
+// REGISTRO DE RUTAS
+// ==========================================
 app.use(gatoRoutes);
 app.use(climaRoutes);
-// 404
+app.use(estadisticasRoutes);
+
+// ==========================================
+// MANEJO DE RUTA NO REGISTRADA (404) -> DEBE IR SIEMPRE AL FINAL
+// ==========================================
 app.use((req, res) => {
   res.status(404).json({ mensaje: "Ruta no registrada." });
 });
-  // agrega esta línea junto a las otras rutas
+
 export default app;
-
-
-

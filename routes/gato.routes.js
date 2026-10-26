@@ -1,5 +1,7 @@
 import express from "express";
+import { Router } from "express";
 import multer from "multer";
+
 import {
   registrarGato,
   obtenerGatos,
@@ -8,56 +10,49 @@ import {
   buscarGatos,
   enviarGatosPorEmail
 } from "../controllers/gato.controller.js";
-import { capturarInfoSolicitud } from "../middlewares/auditoria.js";
 
-import { Router } from "express";
 import { 
   exportarGatosLista, 
   exportarGatosJSON, 
   exportarGatosSQL 
 } from "../controllers/exportacion.controller.js";
 
+import { capturarInfoSolicitud } from "../middlewares/auditoria.js";
 
-const router = express.Router();
+const router = Router();
 
-
+// Middleware global de auditoría para este router
 router.use(capturarInfoSolicitud);  
 
-
+// Configuración de Multer para manejo de imágenes en memoria
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024, // Máximo 5MB
   },
 });
 
-
-// Crear un nuevo gato (POST /gato)
-router.post("/gato", upload.single("imagen"), registrarGato);
-
-
-// Obtener todos los gatos (GET /gatos)
-router.get("/gatos", obtenerGatos);
-
-
-// Actualizar un gato por ID (PUT /gato/:id)
-router.put("/gato/:id", upload.single("imagen"), actualizarGato);
-
-
-// Ruta para eliminar gato por ID
-router.delete("/gato/:id", eliminarGato);
-
-router.get('/gatos/enviar-email', enviarGatosPorEmail);
-
-
+// ==========================================
+// 1. RUTAS ESPECÍFICAS Y DE BÚSQUEDA / EXPORTACIÓN
+// ==========================================
 router.get("/gatos/buscar", buscarGatos);  
+router.get("/gatos/enviar-email", enviarGatosPorEmail);
 
-// Definir las rutas para cada formato de exportación
+// Rutas de exportación (Texto, JSON, SQL)
 router.get("/exportar/lista", exportarGatosLista);
 router.get("/exportar/json", exportarGatosJSON);
 router.get("/exportar/sql", exportarGatosSQL);
 
+// ==========================================
+// 2. RUTAS CRUD GENERALES
+// ==========================================
+router.get("/gatos", obtenerGatos);
+router.post("/gato", upload.single("imagen"), registrarGato);
+
+// ==========================================
+// 3. RUTAS CON PARÁMETROS DINÁMICOS (:id)
+// ==========================================
+router.put("/gato/:id", upload.single("imagen"), actualizarGato);
+router.delete("/gato/:id", eliminarGato);
+
 export default router;
-
-
-
