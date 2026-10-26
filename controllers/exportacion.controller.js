@@ -13,11 +13,14 @@ export const exportarEstadisticasExcel = async (req, res) => {
 
 
     // ======================
+
     // HOJA 1: Resumen
     // ======================
     const hojaResumen = workbook.addWorksheet("Resumen", {
       properties: { tabColor: { argb: "FF4472C4" } },
     });
+
+
 
 
     // Estilos

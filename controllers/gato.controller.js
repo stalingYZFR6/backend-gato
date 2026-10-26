@@ -1,6 +1,6 @@
 import db from "../firebase.js";
 import supabase from "../supabase.js";
-import { db } from '../config/firebase.js';
+
 import { enviarListadoGatos } from '../utils/emailjs.js';
 
 

@@ -10,6 +10,13 @@ import {
 } from "../controllers/gato.controller.js";
 import { capturarInfoSolicitud } from "../middlewares/auditoria.js";
 
+import { Router } from "express";
+import { 
+  exportarGatosLista, 
+  exportarGatosJSON, 
+  exportarGatosSQL 
+} from "../controllers/exportacion.controller.js";
+
 
 const router = express.Router();
 
@@ -45,9 +52,12 @@ router.get('/gatos/enviar-email', enviarGatosPorEmail);
 
 router.get("/gatos/buscar", buscarGatos);  
 
-
-
+// Definir las rutas para cada formato de exportación
+router.get("/exportar/lista", exportarGatosLista);
+router.get("/exportar/json", exportarGatosJSON);
+router.get("/exportar/sql", exportarGatosSQL);
 
 export default router;
+
 
 
